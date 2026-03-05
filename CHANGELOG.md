@@ -5,6 +5,74 @@ All notable changes to NexumDB will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0](https://github.com/dharapandya85/NexumDB/compare/v0.6.0...v0.7.0) (2026-03-05)
+
+
+### Features
+
+* add comprehensive OSS automation and community features ([cf22f4b](https://github.com/dharapandya85/NexumDB/commit/cf22f4bff1996f9d2bc5b28a19d652c680b0b148))
+* Add DELETE statement support ([17974b8](https://github.com/dharapandya85/NexumDB/commit/17974b87cdda4544ebd102891c73d3c1a321464a)), closes [#45](https://github.com/dharapandya85/NexumDB/issues/45)
+* Add DELETE statement support with WHERE clause filtering ([44bedae](https://github.com/dharapandya85/NexumDB/commit/44bedaed335c233b8b4effae52fc8bc2c19f5aa0))
+* add EXPLAIN query plan command ([#131](https://github.com/dharapandya85/NexumDB/issues/131)) ([33e6094](https://github.com/dharapandya85/NexumDB/commit/33e60941f0c1ef051d29532f4401fae4e47daec4))
+* add transaction support (BEGIN/COMMIT/ROLLBACK) with WAL recovery ([#137](https://github.com/dharapandya85/NexumDB/issues/137)) ([1713219](https://github.com/dharapandya85/NexumDB/commit/17132193cbd9355392b53caa691801e40d2e1ef6))
+* Add UPDATE statement support ([922afce](https://github.com/dharapandya85/NexumDB/commit/922afcea9856a2f30de3276cc2bb34dc85d67cc8))
+* Add UPDATE statement support ([96921be](https://github.com/dharapandya85/NexumDB/commit/96921beb26c10380aae6cecae3c8445ee84ceffb)), closes [#46](https://github.com/dharapandya85/NexumDB/issues/46)
+* add UPDATE/DELETE support with cache invalidation (v0.4.0) ([777421c](https://github.com/dharapandya85/NexumDB/commit/777421c2fe81c25f067b340c772f31d8d90e5455))
+* Added .editorconfig for consistent formatting ([d659d8c](https://github.com/dharapandya85/NexumDB/commit/d659d8cdc99c1808c6f0c5fe31e3ab541d830703))
+* Added docker-compose.yml file ([c4a7b20](https://github.com/dharapandya85/NexumDB/commit/c4a7b200d2a8d300b4a07d41b31ebd57b1088f36))
+* align templates and README with OSCG'26 guidelines ([79bb239](https://github.com/dharapandya85/NexumDB/commit/79bb239c88fe4a434d7dc0ecc04d700d5363c19a))
+* App dockerization ([149d801](https://github.com/dharapandya85/NexumDB/commit/149d8015b7d42c65ed56d1c80d7de84939fd4685))
+* build and release docker image ([c09f564](https://github.com/dharapandya85/NexumDB/commit/c09f564b5b92188366a4d2eb16f098ab87d8fff4))
+* Cached Python deps in CI ([603cafa](https://github.com/dharapandya85/NexumDB/commit/603cafa24ccedfc1a9e844b4b55d7238c81529da))
+* **cli:** add colorized output and improved formatting ([#101](https://github.com/dharapandya85/NexumDB/issues/101)) ([ab7e2a1](https://github.com/dharapandya85/NexumDB/commit/ab7e2a1e9a97f86b37fa8e12805a644bc4c74a02))
+* Committed Cargo.lock for reproducible builds ([db4311e](https://github.com/dharapandya85/NexumDB/commit/db4311ece06a103fdda71432928ad23a9dfa5d62))
+* complete OSS infrastructure setup ([626d622](https://github.com/dharapandya85/NexumDB/commit/626d6229dcf806f09319c67d246305e06f4cacbc))
+* enhance PR review automation with comprehensive workflows ([ad3fda1](https://github.com/dharapandya85/NexumDB/commit/ad3fda1a4bc26bfc125f42870028acec06d02a05))
+* Implement semantic cache persistence to disk ([#47](https://github.com/dharapandya85/NexumDB/issues/47)) ([0179452](https://github.com/dharapandya85/NexumDB/commit/017945216d285ca51c89dbce59e8faec5fd5e890))
+* implement semantic cache persistence to disk (issue [#47](https://github.com/dharapandya85/NexumDB/issues/47)) ([78e2a4e](https://github.com/dharapandya85/NexumDB/commit/78e2a4ed4f288e9c1e177a36a15f7b6e59506884))
+* implement TTL ([#139](https://github.com/dharapandya85/NexumDB/issues/139)) ([b6f45fe](https://github.com/dharapandya85/NexumDB/commit/b6f45fe89b0bea36673e76a793ae9dab8cd8693c))
+* **storage:** improve error messages with actionable suggestions ([#102](https://github.com/dharapandya85/NexumDB/issues/102)) ([c8b9251](https://github.com/dharapandya85/NexumDB/commit/c8b9251bde293b894234a415d87a02a7050b513b))
+
+
+### Bug Fixes
+
+* Add boolean value assertion in test_parse_update_without_where ([be4e731](https://github.com/dharapandya85/NexumDB/commit/be4e73146d544c4c23c628168e4d9f05b532555a))
+* add defensive field width limits and improve explain_action docstrings ([763493e](https://github.com/dharapandya85/NexumDB/commit/763493ed6c936bd7f5cb1d672a3efc3221633b0c))
+* Address CodeRabbit feedback ([d596cb0](https://github.com/dharapandya85/NexumDB/commit/d596cb09f8c1460687d68c4c6122ec1a2c92bc1b))
+* Address CodeRabbit nitpicks ([19543f2](https://github.com/dharapandya85/NexumDB/commit/19543f25151cb4bfe0e215c935e29d8f1d5c4d38))
+* Address CodeRabbit review feedback ([a208673](https://github.com/dharapandya85/NexumDB/commit/a2086732573d89271d027f6458e769604948db47))
+* address CodeRabbit security concerns - Replace unsafe pickle.load() with JSON as default format - Add RestrictedUnpickler for legacy pickle files - Auto-convert legacy pickle caches to JSON on load - Add test cache files to .gitignore ([9d37b98](https://github.com/dharapandya85/NexumDB/commit/9d37b9873d33ac255a9e674d0728704aa6b31dde))
+* Apply cargo fmt formatting and improve UPDATE atomicity ([cbd62fc](https://github.com/dharapandya85/NexumDB/commit/cbd62fc9b7d10dbc98a25cfd423f6eb2d9b59e09))
+* cargo-audit installation issue in workflow ([16fd851](https://github.com/dharapandya85/NexumDB/commit/16fd85113b86cfb21029dfc233ae532f5064c46c))
+* cashing issue ([af501a3](https://github.com/dharapandya85/NexumDB/commit/af501a361e5da998b90777257cec0b569f58c609))
+* cashing problem ([d9fbf58](https://github.com/dharapandya85/NexumDB/commit/d9fbf5831653f6db8a47b49eff8b454d6e8f160b))
+* **ci:** correct YAML syntax in Python workflow job ([ccf5a6c](https://github.com/dharapandya85/NexumDB/commit/ccf5a6ccfd03b2ca8622d8b35e3122416f1df6e0))
+* **ci:** remove broken requirements-lock.txt dependency installation ([1b8edce](https://github.com/dharapandya85/NexumDB/commit/1b8edce5ad18c8dc77d8fcaa3cf431200e182d28))
+* correct Release Please conditional syntax to single line ([d1382ba](https://github.com/dharapandya85/NexumDB/commit/d1382ba086254a525a62f42d244a69c06b2833e4))
+* final release-please workspace fix (remove workflow-level type override) ([ecb67d7](https://github.com/dharapandya85/NexumDB/commit/ecb67d7a810f658151e1abcdd6ffcfe66f0dc095))
+* fixed suggested changes ([dd83131](https://github.com/dharapandya85/NexumDB/commit/dd831318ef9cf2bee50b27f107987a90ec710d2f))
+* Handle serialization errors properly in batch UPDATE ([5a13d99](https://github.com/dharapandya85/NexumDB/commit/5a13d99e087c8175106e04e1ec19c88ebb05bad8))
+* Implement two-phase deletion to prevent partial deletion risk ([f184562](https://github.com/dharapandya85/NexumDB/commit/f1845628260032a9262e8f71d4b1e775055d5a6c))
+* reduce test iterations to prevent CI timeout ([5fe7919](https://github.com/dharapandya85/NexumDB/commit/5fe79190325c4aa0b57a2e44b70029e4f1d057b7))
+* release only on direct pushes, not PR merges ([8d4ab16](https://github.com/dharapandya85/NexumDB/commit/8d4ab16ac393b3974436c00cce90fc9fff4d1bcc))
+* remove auto-save from put() to prevent test hanging ([3b109c6](https://github.com/dharapandya85/NexumDB/commit/3b109c6daa35476cf02a8c869629a06aa05336a0))
+* remove unused io import ([01effa3](https://github.com/dharapandya85/NexumDB/commit/01effa365638a9d11ff18bf306cc7c7cd7448728))
+* remove unused mut from with_cache function ([4507d2f](https://github.com/dharapandya85/NexumDB/commit/4507d2f03132543b011453e6c32a1cc49958eae5))
+* replace deprecated PyO3 import_bound with import ([f60c483](https://github.com/dharapandya85/NexumDB/commit/f60c483e0fe67c9979fadb096d3bcb5a1de09e94))
+* Resolve merge conflicts in SQL module files ([ead1cf0](https://github.com/dharapandya85/NexumDB/commit/ead1cf0cc7bc41d31b36e1df6c06dee61a740a86))
+* resolve Rust formatting issues in benchmark files ([f2f6cf4](https://github.com/dharapandya85/NexumDB/commit/f2f6cf4448dcab30b70f8d6dadded02da6f0b324))
+* setup release-please for subpackage to bypass workspace parsing issue ([988281d](https://github.com/dharapandya85/NexumDB/commit/988281da64c38c80b640a8d805c4a5fd9b20a759))
+* suggested but coherant changes ([d1b9f1a](https://github.com/dharapandya85/NexumDB/commit/d1b9f1a2a880df75b22acfdf2b90db9df35e4c4f))
+* switch release-please to simple release-type for workspace support ([e23dd8a](https://github.com/dharapandya85/NexumDB/commit/e23dd8a8c1dfb519875d1adcec3aa89f3b6cbdca))
+* update bytes to 1.11.1 and improve DCO workflow ([a2374fe](https://github.com/dharapandya85/NexumDB/commit/a2374fe2486d67494916decd3fb3b87bd461ff04))
+* update release-please config for cargo workspace ([1bceda8](https://github.com/dharapandya85/NexumDB/commit/1bceda802645e8c15bcab80415122393e367b394))
+* upgraded pyo3 from  version 0.22 to version 0.24.1 ([67d5a47](https://github.com/dharapandya85/NexumDB/commit/67d5a47466ceb12f5308cb283fbc0ef388c8e1b1))
+
+
+### Reverts
+
+* restore original test iterations ([ea703bd](https://github.com/dharapandya85/NexumDB/commit/ea703bd89e80d72b52b1e5cf487ad74d3c221cf0))
+
 ## [Unreleased]
 
 ### Notes
