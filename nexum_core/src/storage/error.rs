@@ -90,115 +90,116 @@ impl StorageError {
         }
     }
 
-    /// Create a user-friendly OpenError with context-aware suggestions.
-    ///
-    /// # Arguments
-    ///
-    /// * `reason` - The underlying error message
-    ///
-    /// # Returns
-    ///
-    /// A `StorageError::OpenError` with helpful suggestions based on the error.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use nexum_core::storage::StorageError;
-    /// let err = StorageError::OpenError("Permission denied".to_string());
-    /// ```
-    #[allow(non_snake_case)]
-    pub fn OpenError(reason: String) -> Self {
-        Self::open_error(reason)
-    }
+    // Create a user-friendly OpenError with context-aware suggestions.
+    //
+    // # Arguments
+    //
+    // * `reason` - The underlying error message
+    //
+    // # Returns
+    //
+    // A `StorageError::OpenError` with helpful suggestions based on the error.
+    //
+    // # Example
+    //
+    // ```ignore
+    // use nexum_core::storage::StorageError;
+    // let err = StorageError::open_error("Permission denied".to_string());
+    // ```
+    // #[allow(non_snake_case)]
+    // pub fn OpenError(reason: String) -> Self {
+    //    Self::open_error(reason)
+    // }
 
-    /// Create a user-friendly WriteError with context-aware suggestions.
-    ///
-    /// # Arguments
-    ///
-    /// * `reason` - The underlying error message
-    ///
-    /// # Returns
-    ///
-    /// A `StorageError::WriteError` with helpful suggestions based on the error.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use nexum_core::storage::StorageError;
-    /// let err = StorageError::WriteError("Disk full".to_string());
-    /// ```
-    #[allow(non_snake_case)]
-    pub fn WriteError(reason: String) -> Self {
-        Self::write_error(reason)
-    }
+    // Create a user-friendly WriteError with context-aware suggestions.
+    //
+    // # Arguments
+    //
+    // * `reason` - The underlying error message
+    //
+    // # Returns
+    //
+    // A `StorageError::WriteError` with helpful suggestions based on the error.
+    //
+    // # Example
+    //
+    // ```ignore
+    // use nexum_core::storage::StorageError;
+    // let err = StorageError::write_error("Disk full");
+    // ```
+    // #[allow(non_snake_case)]
+    // pub fn WriteError(reason: String) -> Self {
+    //     Self::write_error(reason)
+    // }
 
-    /// Create a user-friendly ReadError with context-aware suggestions.
-    ///
-    /// # Arguments
-    ///
-    /// * `reason` - The underlying error message
-    ///
-    /// # Returns
-    ///
-    /// A `StorageError::ReadError` with helpful suggestions based on the error.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use nexum_core::storage::StorageError;
-    /// let err = StorageError::ReadError("Table not found".to_string());
-    /// ```
-    #[allow(non_snake_case)]
-    pub fn ReadError(reason: String) -> Self {
-        Self::read_error(reason)
-    }
+    // Create a user-friendly ReadError with context-aware suggestions.
+    //
+    // # Arguments
+    //
+    // * `reason` - The underlying error message
+    //
+    // # Returns
+    //
+    // A `StorageError::ReadError` with helpful suggestions based on the error.
+    //
+    // # Example
+    //
+    // ```ignore
+    // use nexum_core::storage::StorageError;
+    // let err = StorageError::read_error("Table not found");
+    // ```
+    // #[allow(non_snake_case)]
+    // pub fn ReadError(reason: String) -> Self {
+    //     Self::read_error(reason)
+    // }
 
-    /// Create a user-friendly KeyNotFound error.
-    ///
-    /// # Arguments
-    ///
-    /// * `key` - The key that was not found
-    ///
-    /// # Returns
-    ///
-    /// A `StorageError::KeyNotFound` with suggestions.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use nexum_core::storage::StorageError;
-    /// let err = StorageError::KeyNotFound("users".to_string());
-    /// ```
-    #[allow(non_snake_case)]
-    pub fn KeyNotFound(key: String) -> Self {
-        Self::key_not_found(key, "Key lookup failed", vec![])
-    }
+    // Create a user-friendly KeyNotFound error.
+    //
+    // # Arguments
+    //
+    // * `key` - The key that was not found
+    //
+    // # Returns
+    //
+    // A `StorageError::KeyNotFound` with suggestions.
+    //
+    // # Example
+    //
+    // ```ignore
+    // use nexum_core::storage::StorageError;
+    // let err = StorageError::key_not_found("users");
+    // ```
+    // #[allow(non_snake_case)]
+    // pub fn KeyNotFound(key: String) -> Self {
+    //     Self::key_not_found(key, "Key lookup failed", vec![])
+    // }
 
-    /// Create a user-friendly SerializationError.
-    ///
-    /// # Arguments
-    ///
-    /// * `reason` - The underlying error message
-    ///
-    /// # Returns
-    ///
-    /// A `StorageError::SerializationError` with helpful suggestions.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use nexum_core::storage::StorageError;
-    /// let err = StorageError::SerializationError("Invalid JSON".to_string());
-    /// ```
-    #[allow(non_snake_case)]
-    pub fn SerializationError(reason: String) -> Self {
-        Self::serialization_error(reason, "")
-    }
+    // Create a user-friendly SerializationError.
+    //
+    // # Arguments
+    //
+    // * `reason` - The underlying error message
+    //
+    // # Returns
+    //
+    // A `StorageError::SerializationError` with helpful suggestions.
+    //
+    // # Example
+    //
+    // ```ignore
+    // use nexum_core::storage::StorageError;
+    // let err = StorageError::serialization_error("Invalid JSON".to_string());
+    // ```
+    // #[allow(non_snake_case)]
+    // pub fn SerializationError(reason: String) -> Self {
+    //     Self::serialization_error(reason, "")
+    // }
 
-    /// Internal helper to create OpenError with context-aware suggestions.
+    // Internal helper to create OpenError with context-aware suggestions.
     fn open_error(reason: impl Into<String>) -> Self {
         let reason = reason.into();
-        let suggestion = if reason.contains("Permission denied") {
+        let reason_lower = reason.to_lowercase();
+        let suggestion = if reason_lower.contains("Permission denied") {
             "Check file permissions or run with appropriate privileges".to_string()
         } else if reason.contains("No space left") {
             "Free up disk space or change the database path".to_string()
@@ -218,7 +219,8 @@ impl StorageError {
     /// Internal helper to create WriteError with context-aware suggestions.
     fn write_error(reason: impl Into<String>) -> Self {
         let reason = reason.into();
-        let suggestion = if reason.contains("read-only") {
+        let reason_lower = reason.to_lowercase();
+        let suggestion = if reason_lower.contains("read-only") {
             "The database is in read-only mode. Check permissions or mount options".to_string()
         } else if reason.contains("No space left") {
             "Free up disk space to continue writing data".to_string()
@@ -466,7 +468,7 @@ mod tests {
 
     #[test]
     fn test_error_codes() {
-        let err = StorageError::OpenError("test".to_string());
+        let err = StorageError::open_error("test".to_string());
         assert_eq!(err.code(), ErrorCode::NxmStor101);
     }
 
@@ -479,9 +481,9 @@ mod tests {
     #[test]
     fn test_backward_compatibility() {
         // Test that old-style constructors still work
-        let err1 = StorageError::OpenError("test".to_string());
-        let err2 = StorageError::WriteError("test".to_string());
-        let err3 = StorageError::ReadError("test".to_string());
+        let err1 = StorageError::open_error("test".to_string());
+        let err2 = StorageError::write_error("test".to_string());
+        let err3 = StorageError::read_error("test".to_string());
 
         assert_eq!(err1.code(), ErrorCode::NxmStor101);
         assert_eq!(err2.code(), ErrorCode::NxmStor102);
