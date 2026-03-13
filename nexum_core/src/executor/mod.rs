@@ -355,9 +355,7 @@ impl Executor {
                                     // Row doesn't match WHERE condition, skip
                                 }
                                 Err(e) => {
-                                    return Err(StorageError::read(format!(
-                                            "WHERE clause evaluation failed on row: {}. No rows were deleted.", e
-                                        )));
+                                    return Err(StorageError::FilterError(e));
                                 }
                             }
                         }

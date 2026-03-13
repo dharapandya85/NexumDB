@@ -57,6 +57,9 @@ pub enum StorageError {
         suggestion: String,
     },
 
+    #[error("Filter evaluation failed: {0}")]
+    FilterError(#[from] crate::executor::filter_error::FilterError),
+
     #[error("[{code}] Table or key not found: '{key}'\n  Context: {context}\n  Suggestion: {suggestion}")]
     KeyNotFound {
         code: ErrorCode,
@@ -87,6 +90,7 @@ impl StorageError {
             StorageError::ReadError { code, .. } => *code,
             StorageError::KeyNotFound { code, .. } => *code,
             StorageError::SerializationError { code, .. } => *code,
+            StorageError::FilterError(_) => ErrorCode::NxmStor103,
         }
     }
 

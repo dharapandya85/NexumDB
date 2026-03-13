@@ -8,6 +8,14 @@ use pyo3::Py;
 pub struct PythonBridge {
     initialized: bool,
 }
+fn with_python<F, T>(f: F) -> Result<T>
+where
+    F: FnOnce(Python<'_>) -> PyResult<T>,
+{
+    Python::try_attach(f)
+        .ok_or(BridgeError::NotInitialized)?
+        .map_err(|e: PyErr| BridgeError::PythonError(e.to_string()))
+}
 
 impl PythonBridge {
     pub fn new() -> Result<Self> {
@@ -15,7 +23,7 @@ impl PythonBridge {
     }
 
     pub fn initialize(&mut self) -> Result<()> {
-        Python::try_attach(|py| {
+        with_python(|py| {
             let sys = py.import("sys")?;
             let path_attr = sys.getattr("path")?;
             let path = path_attr.cast::<PyList>()?;
@@ -27,9 +35,7 @@ impl PythonBridge {
             path.insert(0, nexum_ai_path)?;
 
             Ok::<(), PyErr>(())
-        })
-        .ok_or_else(|| BridgeError::PythonError("Python interpreter not available".into()))?
-        .map_err(|e: PyErr| BridgeError::PythonError(e.to_string()))?;
+        })?;
         self.initialized = true;
         Ok(())
     }
@@ -39,7 +45,7 @@ impl PythonBridge {
             return Err(BridgeError::NotInitialized);
         }
 
-        Python::try_attach(|py| {
+        with_python(|py| {
             let nexum_ai = PyModule::import(py, "nexum_ai.optimizer")?;
             let semantic_cache = nexum_ai.getattr("SemanticCache")?;
             let cache_instance = semantic_cache.call0()?;
@@ -50,20 +56,19 @@ impl PythonBridge {
 
             Ok(vector)
         })
-        .ok_or_else(|| BridgeError::PythonError("Python interpreter not available".into()))?
-        .map_err(|e: PyErr| BridgeError::PythonError(e.to_string()))
     }
 
     pub fn test_integration(&self) -> Result<String> {
-        Python::try_attach(|py| {
+        if !self.initialized {
+            return Err(BridgeError::NotInitialized);
+        }
+        with_python(|py| {
             let nexum_ai = PyModule::import(py, "nexum_ai.optimizer")?;
             let test_func = nexum_ai.getattr("test_vectorization")?;
             let result = test_func.call0()?;
             let result_str: String = result.str()?.extract()?;
             Ok(result_str)
         })
-        .ok_or_else(|| BridgeError::PythonError("Python interpreter not available".into()))?
-        .map_err(|e: PyErr| BridgeError::PythonError(e.to_string()))
     }
 }
 
@@ -81,20 +86,18 @@ impl SemanticCache {
         let mut bridge = PythonBridge::new()?;
         bridge.initialize()?;
 
-        let cache = Python::try_attach(|py| {
+        let cache = with_python(|py| {
             let nexum_ai = PyModule::import(py, "nexum_ai.optimizer")?;
             let semantic_cache_class = nexum_ai.getattr("SemanticCache")?;
             let cache_instance = semantic_cache_class.call1((0.95, cache_file))?;
-            Ok::<Py<PyAny>, PyErr>(cache_instance.unbind())
-        })
-        .ok_or_else(|| BridgeError::PythonError("Python interpreter not available".into()))?
-        .map_err(|e: PyErr| BridgeError::PythonError(e.to_string()))?;
+            Ok(cache_instance.unbind())
+        })?;
 
         Ok(Self { bridge, cache })
     }
 
     pub fn get(&self, query: &str) -> Result<Option<String>> {
-        Python::try_attach(|py| {
+        with_python(|py| {
             let cache_bound = self.cache.bind(py);
             let result = cache_bound.call_method1("get", (query,))?;
 
@@ -105,18 +108,14 @@ impl SemanticCache {
                 Ok(Some(value))
             }
         })
-        .ok_or_else(|| BridgeError::PythonError("Python interpreter not available".into()))?
-        .map_err(|e: PyErr| BridgeError::PythonError(e.to_string()))
     }
 
     pub fn put(&self, query: &str, result: &str) -> Result<()> {
-        Python::try_attach(|py| {
+        with_python(|py| {
             let cache_bound = self.cache.bind(py);
             cache_bound.call_method1("put", (query, result))?;
-            Ok::<(), PyErr>(())
+            Ok(())
         })
-        .ok_or_else(|| BridgeError::PythonError("Python interpreter not available".into()))?
-        .map_err(|e: PyErr| BridgeError::PythonError(e.to_string()))
     }
 
     pub fn vectorize(&self, text: &str) -> Result<Vec<f32>> {
@@ -124,55 +123,45 @@ impl SemanticCache {
     }
 
     pub fn save_cache(&self) -> Result<()> {
-        Python::try_attach(|py| {
+        with_python(|py| {
             let cache_bound = self.cache.bind(py);
             cache_bound.call_method0("save_cache")?;
-            Ok::<(), PyErr>(())
+            Ok(())
         })
-        .ok_or_else(|| BridgeError::PythonError("Python interpreter not available".into()))?
-        .map_err(|e: PyErr| BridgeError::PythonError(e.to_string()))
     }
 
     pub fn load_cache(&self) -> Result<()> {
-        Python::try_attach(|py| {
+        with_python(|py| {
             let cache_bound = self.cache.bind(py);
             cache_bound.call_method0("load_cache")?;
-            Ok::<(), PyErr>(())
+            Ok(())
         })
-        .ok_or_else(|| BridgeError::PythonError("Python interpreter not available".into()))?
-        .map_err(|e: PyErr| BridgeError::PythonError(e.to_string()))
     }
 
     pub fn clear_cache(&self) -> Result<()> {
-        Python::try_attach(|py| {
+        with_python(|py| {
             let cache_bound = self.cache.bind(py);
             cache_bound.call_method0("clear")?;
-            Ok::<(), PyErr>(())
+            Ok(())
         })
-        .ok_or_else(|| BridgeError::PythonError("Python interpreter not available".into()))?
-        .map_err(|e: PyErr| BridgeError::PythonError(e.to_string()))
     }
 
     pub fn get_cache_stats(&self) -> Result<String> {
-        Python::try_attach(|py| {
+        with_python(|py| {
             let cache_bound = self.cache.bind(py);
             let result = cache_bound.call_method0("get_cache_stats")?;
             let stats_str: String = result.str()?.extract()?;
             Ok(stats_str)
         })
-        .ok_or_else(|| BridgeError::PythonError("Python interpreter not available".into()))?
-        .map_err(|e: PyErr| BridgeError::PythonError(e.to_string()))
     }
 
     pub fn explain_query(&self, query: &str) -> Result<String> {
-        Python::try_attach(|py| {
+        with_python(|py| {
             let cache_bound = self.cache.bind(py);
             let result = cache_bound.call_method1("explain_query", (query,))?;
             let explain_str: String = result.str()?.extract()?;
             Ok(explain_str)
         })
-        .ok_or_else(|| BridgeError::PythonError("Python interpreter not available".into()))?
-        .map_err(|e: PyErr| BridgeError::PythonError(e.to_string()))
     }
 }
 
@@ -186,14 +175,12 @@ impl NLTranslator {
         let mut bridge = PythonBridge::new()?;
         bridge.initialize()?;
 
-        let translator = Python::try_attach(|py| {
+        let translator = with_python(|py| {
             let nexum_ai = PyModule::import(py, "nexum_ai.translator")?;
             let translator_class = nexum_ai.getattr("NLTranslator")?;
             let translator_instance = translator_class.call0()?;
-            Ok::<Py<PyAny>, PyErr>(translator_instance.unbind())
-        })
-        .ok_or_else(|| BridgeError::PythonError("Python interpreter not available".into()))?
-        .map_err(|e| BridgeError::PythonError(e.to_string()))?;
+            Ok(translator_instance.unbind())
+        })?;
         Ok(Self {
             _bridge: bridge,
             translator,
@@ -201,15 +188,13 @@ impl NLTranslator {
     }
 
     pub fn translate(&self, natural_query: &str, schema: &str) -> Result<String> {
-        Python::try_attach(|py| {
+        with_python(|py| {
             let translator_bound = self.translator.bind(py);
             let result = translator_bound.call_method1("translate", (natural_query, schema))?;
 
             let sql: String = result.extract()?;
             Ok(sql)
         })
-        .ok_or_else(|| BridgeError::PythonError("Python interpreter not available".into()))?
-        .map_err(|e: PyErr| BridgeError::PythonError(e.to_string()))
     }
 }
 
@@ -225,7 +210,7 @@ impl QueryExplainer {
     }
 
     pub fn explain(&self, query: &str) -> Result<String> {
-        Python::try_attach(|py| {
+        with_python(|py| {
             let nexum_ai = PyModule::import(py, "nexum_ai.optimizer")?;
             let explain_func = nexum_ai.getattr("explain_query_plan")?;
             let format_func = nexum_ai.getattr("format_explain_output")?;
@@ -235,12 +220,10 @@ impl QueryExplainer {
             let output: String = formatted.extract()?;
             Ok(output)
         })
-        .ok_or_else(|| BridgeError::PythonError("Python interpreter not available".into()))?
-        .map_err(|e: PyErr| BridgeError::PythonError(e.to_string()))
     }
 
     pub fn explain_raw(&self, query: &str) -> Result<String> {
-        Python::try_attach(|py| {
+        with_python(|py| {
             let nexum_ai = PyModule::import(py, "nexum_ai.optimizer")?;
             let explain_func = nexum_ai.getattr("explain_query_plan")?;
 
@@ -248,8 +231,6 @@ impl QueryExplainer {
             let output: String = result.str()?.extract()?;
             Ok(output)
         })
-        .ok_or_else(|| BridgeError::PythonError("Python interpreter not available".into()))?
-        .map_err(|e: PyErr| BridgeError::PythonError(e.to_string()))
     }
 }
 
